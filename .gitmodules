@@ -1,3 +1,6 @@
 [submodule "portail-client-api"]
 	path = portail-client-api
 	url = https://github.com/T2S-ma/client-portail-api.git
+[submodule "client-portail-web-app"]
+	path = client-portail-web-app
+	url = https://github.com/T2S-ma/client-portail-web-app.git
