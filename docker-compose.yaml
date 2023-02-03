@@ -1,0 +1,60 @@
+version: '3.3'
+
+services:
+  nodejs:
+    build:
+      context: ./API
+      dockerfile: Dockerfile
+    image: tickets-api
+    container_name: tickets-api
+    restart: unless-stopped
+    env_file: .env
+    # environment:
+    #   - MONGO_USERNAME=$MONGO_USERNAME
+    #   - MONGO_PASSWORD=$MONGO_PASSWORD
+    #   - MONGO_HOSTNAME=db
+    #   - MONGO_PORT=$MONGO_PORT
+    #   - MONGO_DB=$MONGO_DB
+    ports:
+      # - ${APIPORT}:${APIPORT}
+      - 3001:3001
+    volumes:
+      - ./API:/usr/src/tickets-management-api
+      - ./API/node_modules:/usr/src/tickets-management-api/node_modules
+    networks:
+      - tickets-network
+    command: /usr/src/tickets-management-api/node_modules/.bin/nodemon server.js
+
+# ./wait-for.sh db:27017 --
+  # db:
+  #   image: mongo:4.1.8-xenial
+  #   container_name: db
+  #   restart: unless-stopped
+  #   env_file: .env
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+  #     - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+  #   volumes:
+  #     - dbdata:/data/db
+  #   networks:
+  #     - tickets-network
+
+  react-app:
+    build:
+      context: ./tickets-app
+      dockerfile: Dockerfile
+    image: tickets-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./tickets-app:/usr/src/tickets-management-app
+      - ./tickets-app/node_modules:/usr/src/tickets-management-app/node_modules
+
+networks:
+  tickets-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+  node_modules:
