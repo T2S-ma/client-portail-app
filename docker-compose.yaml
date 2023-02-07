@@ -3,10 +3,10 @@ version: '3.3'
 services:
   nodejs:
     build:
-      context: ./API
+      context: ./portail-client-api
       dockerfile: Dockerfile
-    image: tickets-api
-    container_name: tickets-api
+    image: portal-client-api
+    container_name: portail-client-api
     restart: unless-stopped
     env_file: .env
     # environment:
@@ -19,40 +19,28 @@ services:
       # - ${APIPORT}:${APIPORT}
       - 3001:3001
     volumes:
-      - ./API:/usr/src/tickets-management-api
-      - ./API/node_modules:/usr/src/tickets-management-api/node_modules
+      - ./portail-client-api:/usr/src/portail-client-api
+      - ./portail-client-api/node_modules:/usr/src/portail-client-api/node_modules
     networks:
-      - tickets-network
-    command: /usr/src/tickets-management-api/node_modules/.bin/nodemon server.js
+      - portal-client-network
+    command: npm start
 
 # ./wait-for.sh db:27017 --
-  # db:
-  #   image: mongo:4.1.8-xenial
-  #   container_name: db
-  #   restart: unless-stopped
-  #   env_file: .env
-  #   environment:
-  #     - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
-  #     - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
-  #   volumes:
-  #     - dbdata:/data/db
-  #   networks:
-  #     - tickets-network
 
   react-app:
     build:
-      context: ./tickets-app
+      context: ./client-portail-web-app
       dockerfile: Dockerfile
-    image: tickets-app
+    image: client-portail-web-app
     restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
-      - ./tickets-app:/usr/src/tickets-management-app
-      - ./tickets-app/node_modules:/usr/src/tickets-management-app/node_modules
+      - ./client-portail-web-app:/usr/src/client-portail-web-app
+      - ./client-portail-web-app/node_modules:/usr/src/client-portail-web-app/node_modules
 
 networks:
-  tickets-network:
+  portal-client-network:
     driver: bridge
 
 volumes:
